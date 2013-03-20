@@ -9,6 +9,7 @@ pkg
 rdoc
 spec/reports
 test/tmp
+test/creds.yaml
 test/version_tmp
 tmp
 
