@@ -1,11 +1,8 @@
 require 'nokogiri'
-require 'awesome_print'
 require 'hashr'
 require 'httparty'
-require 'logger'
 
-
-class BsiClient
+class RBC
   @sessionID = nil
   @creds
   @bsi_url
