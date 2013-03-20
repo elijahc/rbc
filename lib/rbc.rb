@@ -3,13 +3,16 @@ require 'hashr'
 require 'httparty'
 
 class RBC
+  PROD_URL   = 'https://websvc.bsisystems.com:2262/bsi/xmlrpc'
+
   @sessionID = nil
   @creds
   @bsi_url
 
   attr_accessor :sessionID, :bsi_url, :creds
 
-  def initialize(creds, url)
+  # Initialize connection based on provided credentials, default URL is production endpoint
+  def initialize(creds, url=PROD_URL)
     @creds = creds
     raise "Invalid url" unless url.match(/^https:\/\/(.+)\.com:\d{4}\/bsi\/xmlrpc$/)
     @bsi_url = url

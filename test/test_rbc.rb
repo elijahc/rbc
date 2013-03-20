@@ -1,17 +1,13 @@
-require './bsi_client.rb'
+require 'rbc'
+require 'yaml'
 require 'test/unit'
-require 'awesome_print'
 
-class TestBsiClient < Test::Unit::TestCase
-
-  BETA_URL   = 'https://guava.imsweb.com:9272/bsi/xmlrpc'
-  MIRROR_URL = 'https://turnip.imsweb.com:2271/bsi/xmlrpc'
-  PROD_URL   = 'https://websvc.bsisystems.com:2262/bsi/xmlrpc'
+class TestRBC < Test::Unit::TestCase
 
   def setup
 
-    @creds = {:user => 'christensene', :pass => 'apples123', :server => 'PCF'}
-    @bsi_client = BsiClient.new(@creds, BETA_URL )
+    @creds = YAML::load(File.open( 'creds.yaml' ))
+    @bsi_client = RBC.new(@creds)
 
   end
 
@@ -19,6 +15,7 @@ class TestBsiClient < Test::Unit::TestCase
     @bsi_client.logon
     assert_not_equal( nil, @bsi_client.sessionID )
   end
+
   def test_add
     assert_equal( 4, @bsi_client.test_add(1,3) )
   end
@@ -60,7 +57,6 @@ class TestBsiClient < Test::Unit::TestCase
     batch_props.store('batch.template_path', '/system/templates/default')
     batch_props.store('batch_req_verification', '0')
 
-    
   end
 
 end
