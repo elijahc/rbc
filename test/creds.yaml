@@ -1,5 +1,5 @@
 ---
-:user:   'christensene'
-:pass:   'apples123'
-:url:    'https://guava.imsweb.com:9272/bsi/xmlrpc'
-:server: 'PCF'
+:user:   'your_user_name'
+:pass:   'your_pass'
+:url:    'your_url'
+:server: 'your_server'
