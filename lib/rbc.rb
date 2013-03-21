@@ -3,8 +3,6 @@ require 'hashr'
 require 'httparty'
 
 class RBC
-  PROD_URL   = 'https://websvc.bsisystems.com:2262/bsi/xmlrpc'
-
   @sessionID = nil
   @creds
   @bsi_url
@@ -12,10 +10,10 @@ class RBC
   attr_accessor :sessionID, :bsi_url, :creds
 
   # Initialize connection based on provided credentials, default URL is production endpoint
-  def initialize(creds, url=PROD_URL)
+  def initialize(creds)
     @creds = creds
-    raise "Invalid url" unless url.match(/^https:\/\/(.+)\.com:\d{4}\/bsi\/xmlrpc$/)
-    @bsi_url = url
+    @bsi_url = @creds[:url]
+    raise "Invalid url" unless @bsi_url.match(/^https:\/\/(.+)\.com:\d{4}\/bsi\/xmlrpc$/)
     self.logon
   end
 
@@ -38,7 +36,6 @@ class RBC
   # Build xml for submission
   def build_call(method_name,*arguments)
 
-    puts "Calling #{ method_name}( #{ arguments })"
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.methodCall{
         xml.methodName_ method_name.gsub(/_/, '.')
