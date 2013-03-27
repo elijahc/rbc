@@ -21,11 +21,13 @@ class TestRBC < Test::Unit::TestCase
     assert_equal( 'You said: Hi there BSI', @bsi_client.test_echo('Hi there BSI') )
   end
 
-  def test_report_count
-    report_spec = [ {:field => 'vial.bsi_id', :operator => 'not equals', :value => '@@Missing'}
-                  ]
-    display = ['requisition.requisition_id', '+req_repository.req_status']
-    count = @bsi_client.report_count(report_spec, display)
+  def test_batch_create
+    batch_props = Hash.new
+    batch_props.store('batch.acess_level', "1")
+    batch_props.store('batch.description', 'Add Batch example')
+    batch_props.store('batch.template_path', '/system/templates/default')
+    batch_props.store('batch_req_verification', '0')
+
   end
 
   def test_report_execute
@@ -36,13 +38,11 @@ class TestRBC < Test::Unit::TestCase
 
   end
 
-  def test_batch_create
-    batch_props = Hash.new
-    batch_props.store('batch.acess_level', "1")
-    batch_props.store('batch.description', 'Add Batch example')
-    batch_props.store('batch.template_path', '/system/templates/default')
-    batch_props.store('batch_req_verification', '0')
-
+  def test_report_count
+    report_spec = [ {:field => 'vial.bsi_id', :operator => 'not equals', :value => '@@Missing'}
+                  ]
+    display = ['requisition.requisition_id', '+req_repository.req_status']
+    count = @bsi_client.report_count(report_spec, display)
   end
 
 end

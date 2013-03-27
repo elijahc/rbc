@@ -11,7 +11,9 @@ class RBC
 
   # Initialize connection based on provided credentials, default URL is production endpoint
   def initialize(creds)
+    raise 'No credentials provided' if creds.class !== Hash
     @creds = creds
+    raise 'No url provided' if @creds[:url].nil?
     @bsi_url = @creds[:url]
     raise "Invalid url" unless @bsi_url.match(/^https:\/\/(.+)\.com:\d{4}\/bsi\/xmlrpc$/)
     self.logon
