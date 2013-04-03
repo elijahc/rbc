@@ -6,12 +6,13 @@ class RBC
   @sessionID = nil
   @creds
   @bsi_url
+  @debug
 
-  attr_accessor :sessionID, :bsi_url, :creds
+  attr_accessor :sessionID, :bsi_url, :creds, :debug
 
   # Initialize connection based on provided credentials, default URL is production endpoint
   def initialize(creds)
-    raise 'No credentials provided' if creds.class !== Hash
+    raise 'No credentials provided' if creds.class != Hash
     @creds = creds
     raise 'No url provided' if @creds[:url].nil?
     @bsi_url = @creds[:url]
@@ -44,8 +45,12 @@ class RBC
         xml.params{
           arguments.each do |a|
             xml.param{
-              type = a.class.to_s.downcase
-              send("#{type}_to_xml", xml, a)
+              unless a.nil?
+                type = a.class.to_s.downcase
+                send("#{type}_to_xml", xml, a)
+              else
+                raise "Nil is not an acceptable argument"
+              end
             }
           end
         }
@@ -73,7 +78,17 @@ class RBC
   def send_xml(xml)
 
     options = {:body => xml, :ssl_version=>:SSLv3}
+    if @debug
+      puts "Sending:"
+      puts xml
+      puts ""
+    end
     response =  HTTParty.post(@bsi_url, options)
+
+    if @debug
+      puts "Recieved:"
+      puts response.to_s
+    end
 
     parse(response)
 
@@ -171,7 +186,7 @@ class RBC
 
   # TODO: Add a check to make sure its actually formatted correctly
   def method_missing(method_id, *arguments, &block)
-    if method_id.to_s =~ /^(test|common|attachment|batch|database|intrak|shipment|report|study|user|subject)_[a-zA-Z]+$/
+    if method_id.to_s =~ /^(test|common|attachment|batch|database|intrak|shipment|report|study|user|subject)_[a-zA-Z0-9]+$/
       # matches the format, assume its formatted correctly
       if method_id.to_s =~ /^(attachement|batch|database|intrak|shipment|report|study|user|subject)/ && !@sessionID.nil?
         arguments.unshift(@sessionID)

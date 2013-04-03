@@ -7,6 +7,7 @@ class TestRBC < Test::Unit::TestCase
   def setup
     @creds = YAML::load(File.open( './test/creds.yaml' ))
     @bsi_client = RBC.new(@creds)
+    @bsi_client.debug = true
   end
 
   def teardown
