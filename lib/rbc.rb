@@ -2,7 +2,28 @@ require 'nokogiri'
 require 'hashr'
 require 'httparty'
 
+# General exception
+class Error < StandardError
+
+  attr_reader :message, :code
+  attr_accessor :action
+  def initialize(code=nil, message=nil, action=nil)
+    @message  = message
+    @code     = code
+    @action   = action
+  end
+
+  def to_s
+    "Error code #{@code}, #{@message}"
+  end
+
+end
+
+# Exception for broken pipes, or other low level odd eccentricities
+class PipeError < Error; end
+
 class RBC
+  SSL_RETRY_LIMIT = 5
   @sessionID = nil
   @creds
   @bsi_url
@@ -18,6 +39,20 @@ class RBC
     @bsi_url = @creds[:url]
     raise "Invalid url" unless @bsi_url.match(/^https:\/\/(.+)\.com:\d{4}\/bsi\/xmlrpc$/)
     self.logon
+  end
+
+  # Exception dispatcher based on error logged by BSI
+  def generate_exception(code, message)
+    case code
+    when 9000
+      # 9000 level
+      case message
+      when 'Logon failed: Broken pipe'
+        raise PipeError.new(code, message, 'retry')
+      end
+    else
+      raise Error.new(code, message)
+    end
   end
 
   # Basic auth methods
@@ -49,7 +84,7 @@ class RBC
                 type = a.class.to_s.downcase
                 send("#{type}_to_xml", xml, a)
               else
-                raise "Nil is not an acceptable argument"
+                raise "Nil is not an acceptable argument for method: #{method_name}"
               end
             }
           end
@@ -69,9 +104,9 @@ class RBC
       send("convert_#{type}".to_sym, xml['methodResponse']['params']['param']['value'][type])
     else
       # Error occurred, extract it, notify
-      code = xml['methodResponse']['fault']['value']['struct']['member'][0]['value']['int']
+      code = xml['methodResponse']['fault']['value']['struct']['member'][0]['value']['int'].to_i
       message = xml['methodResponse']['fault']['value']['struct']['member'][1]['value']['string']
-      raise "Error #{code}: #{message}"
+      generate_exception(code, message)
     end
   end
 
@@ -83,7 +118,21 @@ class RBC
       puts xml
       puts ""
     end
-    response =  HTTParty.post(@bsi_url, options)
+
+    try_num = 0
+    begin
+      response =  HTTParty.post(@bsi_url, options)
+    rescue OpenSSL::SSL::SSLError => e
+      if try_num < SSL_RETRY_LIMIT
+        try_num = try_num + 1
+        puts "SSL error.  Retry #{try_num}"
+        retry
+      else
+        raise e
+      end
+    rescue PipeError => e
+      retry if e.action == 'retry'
+    end
 
     if @debug
       puts "Recieved:"
@@ -155,18 +204,22 @@ class RBC
 
   def convert_array(xml)
     array = Array.new
-    case xml['data']['value'].class.to_s.downcase
-    when 'array'
-      xml['data']['value'].each do |e|
-        member_type  = e.keys.first
-        member_value = e[member_type]
+    unless xml['data'].nil?
+      case xml['data']['value'].class.to_s.downcase
+      when 'array'
+        xml['data']['value'].each do |e|
+          member_type  = e.keys.first
+          member_value = e[member_type]
+          array << send( "convert_#{member_type}".to_sym, member_value )
+        end
+
+      when 'hash'
+        member_type  = xml['data']['value'].keys.first
+        member_value = xml['data']['value'][member_type]
         array << send( "convert_#{member_type}".to_sym, member_value )
       end
-
-    when 'hash'
-      member_type  = xml['data']['value'].keys.first
-      member_value = xml['data']['value'][member_type]
-      array << send( "convert_#{member_type}".to_sym, member_value )
+    else
+      array = nil
     end
     array
   end
@@ -186,9 +239,9 @@ class RBC
 
   # TODO: Add a check to make sure its actually formatted correctly
   def method_missing(method_id, *arguments, &block)
-    if method_id.to_s =~ /^(test|common|attachment|batch|database|intrak|shipment|report|study|user|subject)_[a-zA-Z0-9]+$/
+    if method_id.to_s =~ /^(test|common|attachment|batch|database|intrak|shipment|requisition|report|study|user|subject)_[a-zA-Z0-9]+$/
       # matches the format, assume its formatted correctly
-      if method_id.to_s =~ /^(attachement|batch|database|intrak|shipment|report|study|user|subject)/ && !@sessionID.nil?
+      if method_id.to_s =~ /^(attachement|batch|database|intrak|shipment|requisition|report|study|user|subject)/ && !@sessionID.nil?
         arguments.unshift(@sessionID)
       end
       build_call(method_id.to_s, *arguments)
