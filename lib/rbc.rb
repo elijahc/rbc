@@ -1,28 +1,10 @@
 require 'nokogiri'
 require 'hashr'
 require 'httparty'
-
-# General exception
-class Error < StandardError
-
-  attr_reader :message, :code
-  attr_accessor :action
-  def initialize(code=nil, message=nil, action=nil)
-    @message  = message
-    @code     = code
-    @action   = action
-  end
-
-  def to_s
-    "Error code #{@code}, #{@message}"
-  end
-
-end
-
-# Exception for broken pipes, or other low level odd eccentricities
-class PipeError < Error; end
+require 'lib/bsi_exceptions.rb'
 
 class RBC
+  include BSI
   SSL_RETRY_LIMIT = 5
   @sessionID = nil
   @creds
@@ -31,7 +13,7 @@ class RBC
 
   attr_accessor :sessionID, :bsi_url, :creds, :debug
 
-  # Initialize connection based on provided credentials, default URL is production endpoint
+  # Initialize connection based on provided credentials
   def initialize(creds)
     raise 'No credentials provided' if creds.class != Hash
     @creds = creds
@@ -48,10 +30,10 @@ class RBC
       # 9000 level
       case message
       when 'Logon failed: Broken pipe'
-        raise PipeError.new(code, message, 'retry')
+        raise BSI::IOError.new(code, message, 'retry')
       end
     else
-      raise Error.new(code, message)
+      raise BSI::Error.new(code, message)
     end
   end
 
@@ -130,7 +112,7 @@ class RBC
       else
         raise e
       end
-    rescue PipeError => e
+    rescue BSI::IOError => e
       retry if e.action == 'retry'
     end
 
