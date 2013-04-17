@@ -1,3 +1,4 @@
+# BSI Exceptions
 module BSI
   # General exception
   class Error < StandardError
@@ -18,4 +19,24 @@ module BSI
 
   # Exception for broken pipes, or other low level odd eccentricities
   class IOError < Error; end
+end
+
+module BSIServices
+  class Base
+    include Marshaling
+
+    def add_methods(methods)
+      methods.each do |meth|
+        define_singleton_method meth, ->(*arguments) {build_call("#{self.class.to_s.split('::').last.downcase}.#{__method__}", *arguments) }
+      end
+    end
+
+  end
+
+  class Test < Base
+    def initialize
+      add_methods(%w(add echo))
+    end
+  end
+
 end
