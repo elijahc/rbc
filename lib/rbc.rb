@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'hashr'
 require 'httparty'
-require 'lib/bsi_exceptions.rb'
+require 'rbc/bsi_exceptions'
 
 class RBC
   include BSI
