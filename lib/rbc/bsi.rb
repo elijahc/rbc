@@ -22,21 +22,26 @@ module Marshaling
 
   class IOError < Error; end
 
+  class IncorrectMethodSignature < Error; end
+
   # Exception dispatcher based on error logged by BSI
-  def generate_exception(code, message)
-    case code
-    when 9000
-      # 9000 level
-      case message
-      when 'Logon failed: Broken pipe'
-        raise IOError.new(code, message, 'retry')
-      end
-    else
-      raise Error.new(code, message)
-    end
-  end
 
   class Marshaler
+
+    SSL_RETRY_LIMIT = 5
+
+    def generate_exception(code, message)
+      case code
+      when 9000
+        # 9000 level
+        case message
+        when 'Logon failed: Broken pipe'
+          raise IOError.new(code, message, 'retry')
+        end
+      else
+        raise Error.new(code, message)
+      end
+    end
 
     def initialize(url, debug)
       @bsi_url = url
@@ -56,7 +61,7 @@ module Marshaling
                   type = a.class.to_s.downcase
                   send("#{type}_to_xml", xml, a)
                 else
-                  raise "Nil is not an acceptable argument for method: #{method_name}"
+                  raise "Nil is not an acceptable argument for method: #{method_name}#{arguments.to_s.gsub(/\]/, ')').gsub(/\[/, '(')}"
                 end
               }
             end
@@ -78,8 +83,10 @@ module Marshaling
         # Error occurred, extract it, notify
         code = xml['methodResponse']['fault']['value']['struct']['member'][0]['value']['int'].to_i
         message = xml['methodResponse']['fault']['value']['struct']['member'][1]['value']['string']
-        raise "#{code}: #{message}"
-        # generate_exception(code, message)
+        # Temp hack to workaround
+        #raise "#{code}: #{message}"
+        # How we should generate exceptions
+        generate_exception(code, message)
       end
     end
 
@@ -103,7 +110,8 @@ module Marshaling
         else
           raise e
         end
-      rescue BSI::IOError => e
+      rescue IOError => e
+        puts 'Broken Pipe error, retrying'
         retry if e.action == 'retry'
       end
 
@@ -265,6 +273,15 @@ module BSIServices
 
   end
 
+  class Attachment < BSIModule; end
+  class Batch < BSIModule; end
+  class Billing < BSIModule; end
+  class Database< BSIModule; end
+  class Report < BSIModule; end
+  class Requisition < BSIModule; end
+  class Shipment < BSIModule; end
+  class Study < BSIModule; end
   class Subject < BSIModule; end
+  class User < BSIModule; end
 
 end
