@@ -196,7 +196,7 @@ module Marshaling
         when 'hash'
           member_type  = xml['data']['value'].keys.first
           member_value = xml['data']['value'][member_type]
-          array << send( "convert_#{member_type}".to_sym, member_value )
+          array << send( "convert_#{member_type.gsub(/\./, '_')}".to_sym, member_value )
         end
       else
         array = nil
@@ -215,6 +215,10 @@ module Marshaling
 
     def convert_string(xml)
       xml
+    end
+
+    def convert_dateTime_iso8601(xml)
+      DateTime.parse(xml)
     end
   end
 end
