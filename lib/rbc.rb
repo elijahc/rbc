@@ -21,7 +21,7 @@ class RBC
     @test       = Test.new(creds)
     @common     = Common.new(creds)
     @attachment = Attachment.new(creds, {:debug=>debug, :methods => %w(download) } )
-    @batch      = Batch.new(creds, {:debug=>debug, :methods => %w(addVials commit delete get getBatchProperties getHeaders getVialProperties performL1Checks performL2Checks removeVials update updateVials)})
+    @batch      = Batch.new(creds, {:debug=>debug, :methods => %w(addVials commit create delete get getBatchProperties getHeaders getVialProperties performL1Checks performL2Checks removeVials update updateVials)})
     @database   = Database.new(creds, {:debug=>debug, :methods => %w(getFields getTables normalizeValues)})
     @shipment   = Shipment.new(creds, {:debug=>debug, :methods => %w(getProperties getShipment submit update updateDiscrepancyResolutionSuggestions)})
     @requisition= Requisition.new(creds, {:debug=>debug, :methods => %w(addVials getAttachments getProperties getReqDiscrepancies removeVials save submit submitSavedRequisitions update updateDiscrepancyResolutions updatePriorities uploadAttachment uploadManifest)})
