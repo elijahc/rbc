@@ -177,7 +177,7 @@ module Marshaling
       xml['member'].each do |e|
         member_name  = e['name']
         member_value_type = e['value'].keys.first
-        member_value = send("convert_#{ member_value_type }".to_sym, e['value'][member_value_type] )
+        member_value = send("convert_#{ member_value_type.gsub(/\./, '_') }".to_sym, e['value'][member_value_type] )
         hash.store( member_name, member_value )
       end
       hash

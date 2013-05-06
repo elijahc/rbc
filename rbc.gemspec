@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   # Metadata
   s.name          = 'rbc'
-  s.version       = '0.2.0'
+  s.version       = '0.2.1'
   s.authors       = ['Elijah Christensen']
   s.email         = ['']
   s.homepage      = 'https://github.com/elijahc/rbc'
