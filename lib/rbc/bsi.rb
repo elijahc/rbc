@@ -43,9 +43,10 @@ module Marshaling
       end
     end
 
-    def initialize(url, debug)
+    def initialize(url, options)
       @bsi_url = url
-      @debug = debug
+      @debug   = options[:debug]
+      @stealth = options[:stealth]
     end
 
     # Build xml for submission
@@ -70,7 +71,7 @@ module Marshaling
       end
 
       # Submit xml to them
-      send_xml( builder.to_xml )
+      send_xml( builder.to_xml ) unless @stealth
     end
 
     def parse(xml)
@@ -239,7 +240,7 @@ module BSIServices
       methods = options[:methods] if options[:methods]
       @@debug = options[:debug]
       @@bsi_url = creds[:url]
-      @@marshal = Marshaler.new(@@bsi_url, options[:debug])
+      @@marshal = Marshaler.new(@@bsi_url, options)
       add_methods(methods)
     end
 
