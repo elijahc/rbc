@@ -92,7 +92,10 @@ module Marshaling
 
     def send_xml( xml)
 
-      options = {:body => xml, :ssl_version=>:SSLv3}
+      options = {:body => xml}
+      if @bsi_url.match(/https/)
+        options.merge(:ssl_version=>:SSLv3)
+      end
       if @debug
         puts "Sending:"
         puts xml
@@ -117,7 +120,7 @@ module Marshaling
 
       if @debug
         puts "Recieved:"
-        puts response.to_s
+        puts Nokogiri::XML(response.body, &:noblanks)
       end
 
       parse(response)
@@ -127,6 +130,7 @@ module Marshaling
     def test_send_xml(xml)
       puts xml
     end
+
 
     # Methods to convert ruby structures into XML in the format BSI expects
     def float_to_xml(noko, float)
@@ -153,7 +157,7 @@ module Marshaling
             hash.each do |k,v|
               noko.member{
                 noko.name_ k.to_s
-                send("#{v.class.to_s.downcase}_to_xml".to_sym, noko, v)
+                send("#{v.class.to_s.downcase}_to_xml".to_sym, noko, v) unless v.nil?
               }
             end
           }
