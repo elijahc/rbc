@@ -11,7 +11,7 @@ class RBC
   attr_accessor :test, :common, :attachment, :batch, :database, :intrak, :shipment, :requisition, :report, :study, :user, :subject
 
   # Initialize connection based on provided credentials
-  def initialize(creds, options={:debug=>false, :test=>false})
+  def initialize(creds, options={:debug=>false, :stealth=>false})
 
     raise 'No credentials provided' if creds.class != Hash
     raise 'No url provided' if creds[:url].nil?
@@ -21,7 +21,7 @@ class RBC
     @test       = Test.new(creds)
     @common     = Common.new(creds)
     @attachment = Attachment.new(creds, options.merge({:methods => %w(download) } ) )
-    @batch      = Batch.new(creds, {:debug=>debug, options.merge( { :methods => %w(addVials commit create delete get getBatchProperties getHeaders getVialProperties performL1Checks performL2Checks removeVials update updateVials)}) )
+    @batch      = Batch.new(creds, options.merge( { :methods => %w(addVials commit create delete get getBatchProperties getHeaders getVialProperties performL1Checks performL2Checks removeVials update updateVials)}) )
     @database   = Database.new(creds, options.merge( { :methods => %w(getFields getTables normalizeValues)}) )
     @shipment   = Shipment.new(creds, options.merge( { :methods => %w(getProperties getShipment submit update updateDiscrepancyResolutionSuggestions)}) )
     @requisition= Requisition.new(creds, options.merge( { :methods => %w(addVials getAttachments getProperties getReqDiscrepancies removeVials save submit submitSavedRequisitions update updateDiscrepancyResolutions updatePriorities uploadAttachment uploadManifest)}) )

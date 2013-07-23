@@ -71,7 +71,7 @@ module Marshaling
       end
 
       # Submit xml to them
-      send_xml( builder.to_xml ) unless @stealth
+      send_xml( builder.to_xml )
     end
 
     def parse(xml)
@@ -104,27 +104,31 @@ module Marshaling
       end
 
       try_num = 0
-      begin
-        response =  HTTParty.post(@bsi_url, options)
-      rescue OpenSSL::SSL::SSLError => e
-        if try_num < SSL_RETRY_LIMIT
-          try_num = try_num + 1
-          puts "SSL error.  Retry #{try_num}"
-          retry
-        else
-          raise e
+      unless @stealth
+        begin
+          response =  HTTParty.post(@bsi_url, options)
+        rescue OpenSSL::SSL::SSLError => e
+          if try_num < SSL_RETRY_LIMIT
+            try_num = try_num + 1
+            puts "SSL error.  Retry #{try_num}"
+            retry
+          else
+            raise e
+          end
+        rescue IOError => e
+          puts 'Broken Pipe error, retrying'
+          retry if e.action == 'retry'
         end
-      rescue IOError => e
-        puts 'Broken Pipe error, retrying'
-        retry if e.action == 'retry'
       end
 
-      if @debug
-        puts "Recieved:"
-        puts Nokogiri::XML(response.body, &:noblanks)
-      end
+      unless @stealth
+        if @debug
+          puts "Recieved:"
+          puts Nokogiri::XML(response.body, &:noblanks)
+        end
 
-      parse(response)
+        parse(response)
+      end
 
     end
 
@@ -239,6 +243,7 @@ module BSIServices
       methods = []
       methods = options[:methods] if options[:methods]
       @@debug = options[:debug]
+      @@stealth = options[:stealth]
       @@bsi_url = creds[:url]
       @@marshal = Marshaler.new(@@bsi_url, options)
       add_methods(methods)
@@ -273,7 +278,12 @@ module BSIServices
     end
 
     def logon
-      @@session_id = @@marshal.build_call( 'common.logon', @creds[:user], @creds[:pass], @creds[:server] )
+      session_id = @@marshal.build_call( 'common.logon', @creds[:user], @creds[:pass], @creds[:server] )
+      if @@stealth
+        @@session_id = 'DUMMY-SESSION-ID'
+      else
+        @@session_id = session_id
+      end
     end
 
     def logoff
