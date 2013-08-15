@@ -218,6 +218,10 @@ module Marshaling
       xml.to_i
     end
 
+    def convert_boolean(xml)
+      xml
+    end
+
     def convert_nil(xml)
       nil
     end
