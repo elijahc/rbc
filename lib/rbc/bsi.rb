@@ -1,4 +1,5 @@
 module Marshaling
+  require 'base64'
   ####################################
   #           Exceptions             #
   ####################################
@@ -142,6 +143,16 @@ module Marshaling
       noko.value{
         noko.float_ float
       }
+    end
+
+    def enumerator_to_xml(noko, enumerator)
+      # this should only be exercised when trying to pass a byte array
+      # this should be sent enclosed in <base64> and encoded as such
+
+      noko.value{
+        noko.base64_ Base64.encode64(enumerator.to_a.pack('c*')).strip
+      }
+
     end
 
     def array_to_xml(noko, array)
