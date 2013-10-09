@@ -1,11 +1,14 @@
+$LOAD_PATH << File.expand_path('../lib', __FILE__)
+require 'rbc/version'
+
 Gem::Specification.new do |s|
   # Metadata
   s.name          = 'rbc'
-  s.version       = '0.2.2'
+  s.version       = RBC::VERSION
+  s.platform      = Gem::Platform::RUBY
   s.authors       = ['Elijah Christensen']
-  s.email         = ['']
+  s.email         = ['ejd.christensen@gmail.com']
   s.homepage      = 'https://github.com/elijahc/rbc'
-  s.date          = '2013-03-20'
   s.summary       = 'A ruby client for managing interactions with the IMS BioSpecimen Inventory system'
 
   # Manifest
@@ -15,7 +18,6 @@ Gem::Specification.new do |s|
 
   # Dependencies
   s.add_runtime_dependency('nokogiri', ['>= 1.5.5'])
-  s.add_runtime_dependency('hashr', '>= 0.0.22')
   s.add_runtime_dependency('httparty', '>= 0.9.0')
 
 end

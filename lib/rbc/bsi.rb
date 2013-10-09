@@ -150,7 +150,7 @@ module Marshaling
       # this should be sent enclosed in <base64> and encoded as such
 
       noko.value{
-        noko.base64_ Base64.encode64(enumerator.to_a.pack('c*')).strip
+        noko.base64_ Base64.encode64(enumerator.to_a.pack('c*'))
       }
 
     end

@@ -1,5 +1,4 @@
 require 'nokogiri'
-require 'hashr'
 require 'httparty'
 require 'rbc/bsi'
 
@@ -21,7 +20,7 @@ class RBC
     @test       = Test.new(creds)
     @common     = Common.new(creds)
     @attachment = Attachment.new(creds, options.merge({:methods => %w(download) } ) )
-    @batch      = Batch.new(creds, options.merge( { :methods => %w(addVials commit create delete get getBatchProperties getHeaders getVialProperties performL1Checks performL2Checks removeVials update updateVials)}) )
+    @batch      = Batch.new(creds, options.merge( { :methods => %w(addVials commit create delete get getBatchProperties getHeaders getVialProperties performL1Checks performL2Checks removeVials update updateVials reserveAvailableBsiIds)}) )
     @database   = Database.new(creds, options.merge( { :methods => %w(getFields getTables normalizeValues)}) )
     @shipment   = Shipment.new(creds, options.merge( { :methods => %w(getProperties getShipment submit update uploadManifest updateDiscrepancyResolutionSuggestions)}) )
     @requisition= Requisition.new(creds, options.merge( { :methods => %w(addVials getAttachments getProperties getReqDiscrepancies removeVials save submit submitSavedRequisitions update updateDiscrepancyResolutions updatePriorities uploadAttachment uploadManifest)}) )
