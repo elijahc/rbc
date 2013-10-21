@@ -24,6 +24,7 @@ class RBC
     @database   = Database.new(creds, options.merge( { :methods => %w(getFields getTables normalizeValues)}) )
     @shipment   = Shipment.new(creds, options.merge( { :methods => %w(getProperties getShipment submit update uploadManifest updateDiscrepancyResolutionSuggestions)}) )
     @requisition= Requisition.new(creds, options.merge( { :methods => %w(addVials getAttachments getProperties getReqDiscrepancies removeVials save submit submitSavedRequisitions update updateDiscrepancyResolutions updatePriorities uploadAttachment uploadManifest)}) )
+    @reults     = Report.new(creds, options.merge( { :methods => %w(createResultsBatch)}) )
     @report     = Report.new(creds, options.merge( { :methods => %w(count execute)}) )
     @study      = Study.new(creds, options.merge( { :methods => %w(getAttachments)}) )
     @user       = User.new(creds, options.merge( { :methods => %w(authorize create getInfo update)}) )

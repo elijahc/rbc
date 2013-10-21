@@ -21,8 +21,6 @@ module Marshaling
 
   end
 
-  class IOError < Error; end
-
   class IncorrectMethodSignature < Error; end
 
   # Exception dispatcher based on error logged by BSI
@@ -76,6 +74,7 @@ module Marshaling
     end
 
     def parse(xml)
+
       # Handle Errors appropriately
       unless xml['methodResponse'].keys.include?('fault')
         type = xml['methodResponse']['params']['param']['value'].keys.pop
@@ -85,8 +84,6 @@ module Marshaling
         # Error occurred, extract it, notify
         code = xml['methodResponse']['fault']['value']['struct']['member'][0]['value']['int'].to_i
         message = xml['methodResponse']['fault']['value']['struct']['member'][1]['value']['string']
-        # Temp hack to workaround
-        #raise "#{code}: #{message}"
         # How we should generate exceptions
         generate_exception(code, message)
       end
@@ -308,7 +305,11 @@ module BSIServices
   end
 
   class Attachment < BSIModule; end
-  class Batch < BSIModule; end
+  class Batch < BSIModule
+    def reserveNextBsiId( batch_id, sample_id_template)
+      reserveAvailableBsiIds( batch_id, sample_id_template, 1).first
+    end
+  end
   class Billing < BSIModule; end
   class Database< BSIModule; end
   class Report < BSIModule; end
