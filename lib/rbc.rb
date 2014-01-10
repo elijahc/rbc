@@ -6,7 +6,7 @@ class RBC
   include BSIServices
 
   # Fetch list of services from BSI public javadoc
-  services = YAML::load(File.open('../ref/service_spec.yaml'))
+  services = YAML::load(File.open('../lib/service_spec.yaml'))
 
   attr_accessor :sessionID, :bsi_url, :creds
 

@@ -29,7 +29,7 @@ services.values.each do |service|
   service[:methods] = methods.grep(/^[a-z]+/)
 end
 
-File.open('./ref/service_spec.yaml', 'wb') do |f|
+File.open('./lib/service_spec.yaml', 'wb') do |f|
   f.write(services.to_yaml)
 end
 
