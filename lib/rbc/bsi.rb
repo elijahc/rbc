@@ -272,11 +272,11 @@ module BSIServices
   class Test < BSIModule
 
     def add(*arguments)
-      build_call('test.add', *arguments)
+      @@marshal.build_call('test.add', *arguments)
     end
 
     def echo(string)
-      build_call('test.echo', string)
+      @@marshal.build_call('test.echo', string)
     end
 
   end

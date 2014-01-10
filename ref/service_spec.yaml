@@ -1,0 +1,150 @@
+---
+:attachment:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/AttachmentService.html
+  :methods:
+  - download
+:batch:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/BatchService.html
+  :methods:
+  - addVials
+  - commit
+  - create
+  - delete
+  - get
+  - getBatchProperties
+  - getHeaders
+  - getVialProperties
+  - performL1Checks
+  - performL2Checks
+  - removeVials
+  - reserveAvailableBsiIds
+  - update
+  - updateVials
+:billing:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/BillingService.html
+  :methods:
+  - run
+:cabig:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/CABigService.html
+  :methods:
+  - getAvailableSpecimenCount
+  - getSpecimenCount
+  - getSpecimenFields
+  - getSpecimens
+  - logoff
+  - logon
+:common:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/CommonService.html
+  :methods:
+  - checkPermission
+  - logoff
+  - logon
+  - ping
+  - setForgottenPassword
+  - webLogon
+:database:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/DatabaseService.html
+  :methods:
+  - getFields
+  - getTables
+  - normalizeValues
+:intrak:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/InTrakService.html
+  :methods:
+  - notifyDataModification
+  - notifyEventComplete
+  - notifyShipmentReceived
+  - notifyShipmentSpecimensReceived
+  - notifyShipTaskDataUpdated
+  - notifySpecimensAliquotted
+  - notifySpecimensDestroyed
+  - notifySpecimensRelabeled
+  - notifySpecimensReturned
+  - notifySpecimensShipped
+:ireport:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/IReportService.html
+  :methods:
+  - getDisplayTables
+  - getReport
+  - getReportDirectoryStructure
+  - getReportsInFolder
+  - saveReport
+:kit:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/KitService.html
+  :methods:
+  - updateStatus
+:ladds:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/LADDSService.html
+  :methods:
+  - upload
+:report:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/ReportService.html
+  :methods:
+  - count
+  - count
+  - execute
+  - execute
+:requisition:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/RequisitionService.html
+  :methods:
+  - addVials
+  - checkAuthorization
+  - getAttachments
+  - getProperties
+  - getReqDiscrepancies
+  - removeVials
+  - save
+  - submit
+  - submit
+  - submitSavedRequisition
+  - update
+  - updateDiscrepancyResolutionSuggestions
+  - updatePriorities
+  - uploadAttachment
+  - uploadManifest
+:results:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/ResultsService.html
+  :methods:
+  - createResultsBatch
+  - createResultsBatch
+  - getProcedureDescription
+  - getResultsRunData
+  - saveResultsRunData
+:shipment:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/ShipmentService.html
+  :methods:
+  - addVials
+  - getProperties
+  - getShipment
+  - submit
+  - submit
+  - update
+  - updateDiscrepancyResolutionSuggestions
+  - uploadManifest
+:study:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/StudyService.html
+  :methods:
+  - getAttachments
+:subject:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/SubjectService.html
+  :methods:
+  - deleteSubject
+  - getAttachments
+  - getSubject
+  - getSubjectProperties
+  - performL1Checks
+  - performL2Checks
+  - saveNewSubject
+  - saveSubject
+:test:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/TestService.html
+  :methods:
+  - add
+  - echo
+:user:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/UserService.html
+  :methods:
+  - authorize
+  - create
+  - getInfo
+  - update
