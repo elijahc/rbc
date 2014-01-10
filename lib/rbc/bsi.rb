@@ -245,6 +245,9 @@ module Marshaling
 end
 
 module BSIServices
+  #
+  # Parent class of a standard BSIService
+  #
   class BSIModule
     include Marshaling
     @@bsi_url     = nil
@@ -269,7 +272,10 @@ module BSIServices
 
   end
 
-  class Test < BSIModule
+  #
+  # Special standard services that behave differently than the rest
+  #
+  class TestService < BSIModule
 
     def add(*arguments)
       @@marshal.build_call('test.add', *arguments)
@@ -281,10 +287,10 @@ module BSIServices
 
   end
 
-  class Common < BSIModule
+  class CommonService < BSIModule
     # Special class where we don't want to pass SESSION_ID to all of its methods
 
-    def initialize(creds)
+    def initialize(creds, options={})
       @creds = creds
       super
     end
@@ -304,19 +310,10 @@ module BSIServices
 
   end
 
-  class Attachment < BSIModule; end
-  class Batch < BSIModule
+  class BatchService < BSIModule
     def reserveNextBsiId( batch_id, sample_id_template)
       reserveAvailableBsiIds( batch_id, sample_id_template, 1).first
     end
   end
-  class Billing < BSIModule; end
-  class Database< BSIModule; end
-  class Report < BSIModule; end
-  class Requisition < BSIModule; end
-  class Shipment < BSIModule; end
-  class Study < BSIModule; end
-  class Subject < BSIModule; end
-  class User < BSIModule; end
 
 end

@@ -5,21 +5,25 @@ require 'test/unit'
 class TestRBC < Test::Unit::TestCase
 
   def setup
-    @creds = YAML::load(File.open( './test/creds.yaml' ))
-    @bsi_client = RBC.new(@creds)
-    @bsi_client.debug = true
+    @creds = YAML::load(File.open( './test/key.yaml' ))
+    @bsi = RBC.new(@creds, {:debug => true, :stealth => true})
   end
 
   def teardown
-    @bsi_client.logoff
+    @bsi.logoff
+  end
+
+  def test_init
+
+    assert('RBC', @bsi.class)
   end
 
   def test_add
-    assert_equal( 4, @bsi_client.test_add(1,3) )
+    assert_equal( 4, @bsi.test.add(1,3) )
   end
 
   def test_echo
-    assert_equal( 'You said: Hi there BSI', @bsi_client.test_echo('Hi there BSI') )
+    assert_equal( 'You said: Hi there BSI', @bsi.test.echo('Hi there BSI') )
   end
 
   def test_batch_create
@@ -35,7 +39,7 @@ class TestRBC < Test::Unit::TestCase
 
     report_spec = [{:field => 'vial.bsi_id', :operator => 'not equals', :value => '@@Missing'}]
     display = ['vial.bsi_id']
-    report = @bsi_client.report_execute(report_spec, display, ['vial.bsi_id'], 0, 1)
+    report = @bsi.report_execute(report_spec, display, ['vial.bsi_id'], 0, 1)
 
   end
 
@@ -43,7 +47,7 @@ class TestRBC < Test::Unit::TestCase
     report_spec = [ {:field => 'vial.bsi_id', :operator => 'not equals', :value => '@@Missing'}
                   ]
     display = ['requisition.requisition_id', '+req_repository.req_status']
-    count = @bsi_client.report_count(report_spec, display)
+    count = @bsi.report_count(report_spec, display)
   end
 
 end

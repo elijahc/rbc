@@ -10,7 +10,7 @@ pkg
 rdoc
 spec/reports
 test/tmp
-test/creds.yaml
+test/key.yaml
 test/version_tmp
 tmp
 
