@@ -11,7 +11,7 @@ class RBC
   (services.keys-[:test, :common]).each do |s|
     klass = Class.new(BSIModule)
     attr_accessor s
-    Kernel.const_set(s.to_s.capitalize+"Service", klass)
+    RBC.const_set(s.to_s.capitalize, klass)
   end
 
 
@@ -25,12 +25,12 @@ class RBC
     services = YAML::load(File.open(File.join(File.dirname(__FILE__), 'service_spec.yaml')))
     (services.keys).each do |k|
       instance_eval(
-        "self.#{k} = #{k.to_s.capitalize}Service.new(creds, options.merge( { :methods => services[k][:methods] } ) )"
+        "self.#{k} = #{k.to_s.capitalize}.new(creds, options.merge( { :methods => services[k][:methods] } ) )"
       )
     end
 
-    @test       = TestService.new(creds)
-    @common     = CommonService.new(creds)
+    @test       = Test.new(creds, options)
+    @common     = Common.new(creds, options)
 =begin
     # Initialize BSI service connection adaptors
     @attachment = Attachment.new(creds, options.merge({:methods => %w(download) } ) )
@@ -43,9 +43,8 @@ class RBC
     @study      = Study.new(creds, options.merge( { :methods => %w(getAttachments)}) )
     @user       = User.new(creds, options.merge( { :methods => %w(authorize create getInfo update)}) )
     @subject    = Subject.new(creds, options.merge( { :methods => %w(deleteSubject getAttachments getSubject getSubjectProperties performL1Checks performL2Checks saveNewSubject saveSubject)}) )
-
-    @common.logon
 =end
+    @common.logon
 
   end
 

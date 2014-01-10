@@ -275,7 +275,7 @@ module BSIServices
   #
   # Special standard services that behave differently than the rest
   #
-  class TestService < BSIModule
+  class Test < BSIModule
 
     def add(*arguments)
       @@marshal.build_call('test.add', *arguments)
@@ -287,7 +287,7 @@ module BSIServices
 
   end
 
-  class CommonService < BSIModule
+  class Common < BSIModule
     # Special class where we don't want to pass SESSION_ID to all of its methods
 
     def initialize(creds, options={})
@@ -310,7 +310,7 @@ module BSIServices
 
   end
 
-  class BatchService < BSIModule
+  class Batch < BSIModule
     def reserveNextBsiId( batch_id, sample_id_template)
       reserveAvailableBsiIds( batch_id, sample_id_template, 1).first
     end
