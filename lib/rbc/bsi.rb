@@ -256,11 +256,12 @@ module BSIServices
 
     def initialize(creds, options={})
       methods = []
-      methods = options[:methods] if options[:methods]
-      @@debug = options[:debug]
-      @@stealth = options[:stealth]
-      @@bsi_url = creds[:url]
-      @@marshal = Marshaler.new(@@bsi_url, options)
+      methods       = options[:methods] if options[:methods]
+      @@debug       = options[:debug]
+      @@stealth     = options[:stealth]
+      @@session_id  = creds[:session_id] if creds[:session_id]
+      @@bsi_url     = creds[:url]
+      @@marshal     = Marshaler.new(@@bsi_url, options)
       add_methods(methods)
     end
 

@@ -5,7 +5,7 @@ require 'rbc/bsi'
 class RBC
   include BSIServices
 
-  attr_accessor :sessionID, :bsi_url, :creds, :test, :common
+  attr_accessor :session_id, :bsi_url, :creds, :test, :common
 
   services = YAML::load(File.open(File.join(File.dirname(__FILE__), 'service_spec.yaml')))
   (services.keys-[:test, :common]).each do |s|
@@ -22,6 +22,7 @@ class RBC
     raise 'No url provided' if creds[:url].nil?
     raise "Invalid url" unless creds[:url].match(/^https?:\/\/(.+)\.com:\d{4}\/bsi\/xmlrpc$/)
 
+    self.session_id = creds[:session_id] if creds[:session_id]
     services = YAML::load(File.open(File.join(File.dirname(__FILE__), 'service_spec.yaml')))
     (services.keys).each do |k|
       instance_eval(
@@ -44,7 +45,7 @@ class RBC
     @user       = User.new(creds, options.merge( { :methods => %w(authorize create getInfo update)}) )
     @subject    = Subject.new(creds, options.merge( { :methods => %w(deleteSubject getAttachments getSubject getSubjectProperties performL1Checks performL2Checks saveNewSubject saveSubject)}) )
 =end
-    @common.logon
+    @common.logon if @session_id.nil?
 
   end
 
