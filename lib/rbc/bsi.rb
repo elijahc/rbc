@@ -22,6 +22,7 @@ module Marshaling
   end
 
   class IncorrectMethodSignature < Error; end
+  class IncorrectMethodSignature < Error; end
 
   # Exception dispatcher based on error logged by BSI
 
@@ -35,7 +36,7 @@ module Marshaling
         # 9000 level
         case message
         when 'Logon failed: Broken pipe'
-          raise IOError.new(code, message, 'retry')
+          raise Error.new(code, message, 'retry')
         end
       else
         raise Error.new(code, message)
@@ -113,7 +114,7 @@ module Marshaling
           else
             raise e
           end
-        rescue IOError => e
+        rescue Error => e
           puts 'Broken Pipe error, retrying'
           retry if e.action == 'retry'
         end
