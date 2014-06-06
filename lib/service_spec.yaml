@@ -33,6 +33,10 @@
   - getSpecimens
   - logoff
   - logon
+:codelist:
+  :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/CodeListService.html
+  :methods:
+  - synchCodeList
 :common:
   :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/CommonService.html
   :methods:
@@ -88,8 +92,10 @@
   :doc_link: http://www506.imsweb.com/wsapi-dev/bsi/webservices/service/RequisitionService.html
   :methods:
   - addVials
+  - changeRequisitionVialApprovalStatus
   - checkAuthorization
   - getAttachments
+  - getBsiIdsRequiringApproval
   - getProperties
   - getReqDiscrepancies
   - removeVials
