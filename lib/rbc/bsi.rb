@@ -43,10 +43,11 @@ module Marshaling
       end
     end
 
-    def initialize(url, options)
-      @bsi_url = url
-      @debug   = options[:debug]
-      @stealth = options[:stealth]
+    def initialize(url, options={:verify=>true})
+      @bsi_url    = url
+      @debug      = options[:debug]
+      @stealth    = options[:stealth]
+      @verify_ssl = options[:verify]
     end
 
     # Build xml for submission
@@ -95,6 +96,7 @@ module Marshaling
       options = {:body => xml}
       if @bsi_url.match(/https/)
         options.merge(:ssl_version=>:SSLv3)
+        options.merge(:verify => @verify)
       end
       if @debug
         puts "Sending:"

@@ -20,7 +20,7 @@ class RBC
 
     raise 'No credentials provided' if creds.class != Hash
     raise 'No url provided' if creds[:url].nil?
-    raise "Invalid url" unless creds[:url].match(/^https?:\/\/(.+)\.com:\d{4}\/bsi\/xmlrpc$/)
+    raise "Invalid url" unless creds[:url].match(/^https?:\/\/(.+):\d{4}\/bsi\/xmlrpc$/)
 
     self.session_id = creds[:session_id] if creds[:session_id]
     services = YAML::load(File.open(File.join(File.dirname(__FILE__), 'service_spec.yaml')))
