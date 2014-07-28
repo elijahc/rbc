@@ -1,4 +1,6 @@
 module Marshaling
+  require 'Nokogiri'
+  require 'httparty'
   require 'base64'
   ####################################
   #           Exceptions             #
@@ -44,7 +46,7 @@ module Marshaling
     end
 
     def initialize(url, options={:verify=>true})
-      @bsi_url    = url
+      @target_url = url
       @debug      = options[:debug]
       @stealth    = options[:stealth]
       @verify_ssl = options[:verify]
@@ -94,9 +96,9 @@ module Marshaling
     def send_xml( xml)
 
       options = {:body => xml}
-      if @bsi_url.match(/https/)
-        options.merge(:ssl_version=>:SSLv3)
-        options.merge(:verify => @verify)
+      if @target_url.match(/https/)
+        options.merge!(:ssl_version=>:SSLv3)
+        options.merge!(:verify => @verify_ssl)
       end
       if @debug
         puts "Sending:"
@@ -107,7 +109,7 @@ module Marshaling
       try_num = 0
       unless @stealth
         begin
-          response =  HTTParty.post(@bsi_url, options)
+          response =  HTTParty.post(@target_url, options)
         rescue OpenSSL::SSL::SSLError => e
           if try_num < SSL_RETRY_LIMIT
             try_num = try_num + 1
@@ -253,7 +255,7 @@ module BSIServices
   #
   class BSIModule
     include Marshaling
-    @@bsi_url     = nil
+    @@target_url  = nil
     @@session_id  = nil
     @@debug       = false
 
@@ -263,8 +265,8 @@ module BSIServices
       @@debug       = options[:debug]
       @@stealth     = options[:stealth]
       @@session_id  = creds[:session_id] if creds[:session_id]
-      @@bsi_url     = creds[:url]
-      @@marshal     = Marshaler.new(@@bsi_url, options)
+      @@target_url  = options[:url]
+      @@marshal     = Marshaler.new(@@target_url, options)
       add_methods(methods)
     end
 
