@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rbc (0.2.9)
+    rbc (0.2.10)
       httparty (~> 0.9, >= 0.9.0)
       nokogiri (>= 1.5.5)
 
