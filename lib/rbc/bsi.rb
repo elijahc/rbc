@@ -1,5 +1,5 @@
 module Marshaling
-  require 'Nokogiri'
+  require 'nokogiri'
   require 'httparty'
   require 'base64'
   ####################################
