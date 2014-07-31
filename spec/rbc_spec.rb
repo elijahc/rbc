@@ -13,11 +13,13 @@ describe RBC do
       expect{RBC.new([])}.to raise_error(ArgumentError)
       expect{RBC.new({:user => 'me'})}.to raise_error(ArgumentError)
       expect{RBC.new({:user => 'me', :pass => 'too'})}.to raise_error(ArgumentError)
+      expect{RBC.new({:user => 'me', :pass => 'too', :server => 'my_server'}, {:instance => :bad_instance})}.to raise_error(ArgumentError)
     end
 
     it 'takes an optional instance parameter' do
       @bsi = RBC.new({:user => 'me', :pass => 'pass', :server => 'server'}, {:instance => :mirror})
-      expect(@bsi.url_target).to eq(RBC::BSI_INSTANCES[:mirror])
+      expect(@bsi.url_target).to eq(RBC::BSI_INSTANCES['mirror'])
+      expect(@bsi.url_target)
     end
   end
 

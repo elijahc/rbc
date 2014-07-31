@@ -6,9 +6,9 @@ class RBC
   include RBCVersion
   include BSIServices
   BSI_INSTANCES = {
-    :mirror     => 'https://websvc-mirror.bsisystems.com:2271/bsi/xmlrpc',
-    :staging    => 'https://websvc-mirror.bsisystems.com:2271/bsi/xmlrpc',
-    :production => 'https://websvc.bsisystems.com:2262/bsi/xmlrpc'
+    'mirror'     => 'https://websvc-mirror.bsisystems.com:2271/bsi/xmlrpc',
+    'staging'    => 'https://websvc-mirror.bsisystems.com:2271/bsi/xmlrpc',
+    'production' => 'https://websvc.bsisystems.com:2262/bsi/xmlrpc'
   }
 
   attr_accessor :session_id, :url_target, :creds, :test, :common
@@ -22,6 +22,8 @@ class RBC
 
   # Initialize connection based on provided credentials
   def initialize(creds, options={:debug=>false, :stealth=>false, :instance=>:mirror})
+    options[:stealth]   ||= false
+    options[:instance]  ||= 'mirror'
     raise ArgumentError, """
 No credentials hash provided, expected a hash in the form of:
   {
@@ -30,11 +32,12 @@ No credentials hash provided, expected a hash in the form of:
     :server   => 'MYBSIDATABASE',
   }
     """ if creds.class != Hash || creds[:user].nil? || creds[:pass].nil? || creds[:server].nil?
-    raise ArgumentError, 'Please provide either a valid instance or specify a custom url using option key :url => \'https://...\'' if BSI_INSTANCES[options[:instance]].nil? && options[:url].nil? && options[:stealth]==false
-    options[:url] = BSI_INSTANCES[options[:instance]] unless options[:url]
-    self.url_target = options[:url]
 
-    raise RuntimError, "Invalid url" unless url_target.match(/^https?:\/\/(.+):\d{4}\/bsi\/xmlrpc$/)
+    options[:url] ||= BSI_INSTANCES[options[:instance].to_s]
+    @url_target = options[:url]
+    if options[:stealth]==false && @url_target.nil?
+      raise ArgumentError, 'Please provide either a valid instance key or specify a custom url using option key :url => \'https://...\''
+    end
 
     self.session_id = creds[:session_id] if creds[:session_id]
     services = YAML::load(File.open(File.join(File.dirname(__FILE__), 'service_spec.yaml')))
