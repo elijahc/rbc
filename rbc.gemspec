@@ -35,5 +35,5 @@ Gem::Specification.new do |s|
 
   # Runtime Dependencies
   s.add_runtime_dependency('nokogiri', ['>= 1.5.5'])
-  s.add_runtime_dependency('httparty', '~> 0.9', '>= 0.9.0')
+  s.add_runtime_dependency('httparty', '~> 0.9', '>= 0.11.0')
 end
