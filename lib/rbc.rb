@@ -7,7 +7,7 @@ class RBC
   include BSIServices
   BSI_INSTANCES = {
     'mirror'     => 'https://websvc-mirror.bsisystems.com:2271/bsi/xmlrpc',
-    'staging'    => 'https://websvc-mirror.bsisystems.com:2271/bsi/xmlrpc',
+    'uat'    => 'https://websvc-mirror.bsisystems.com:2271/bsi/xmlrpc',
     'production' => 'https://websvc.bsisystems.com:2262/bsi/xmlrpc'
   }
 
